@@ -10,9 +10,10 @@
   * add a new SSH key to your github account
     - in the user setting
 
-2. clone project
+2. clone project and pull
 ```
 git clone [ssh href]
+git pull origin master --no-ff
 ```
 
 3. git stash

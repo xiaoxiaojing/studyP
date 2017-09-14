@@ -1,3 +1,5 @@
+* https://zhuanlan.zhihu.com/p/23012870
+
 # redux-saga
 * `redux-saga` is a redux middleware
 * it uses Generators
@@ -89,6 +91,10 @@ export default function* rootSaga() {
   * offers a way of triggering a race between multiple Effects
   * it automatically cancels the loser Effects
 12. `spawn`: used to create detached forks(`fork` is used to create attached forks)
+13. `throttle(ms, pattern, saga, ...args)`:
+  * spawns a saga on an action dispatched to the Store that matches `pattern`
+14. `select`: get state
+  * `const id = yield select(state => state.id)`
 
 ## Error handing
 1. use `try/catch`

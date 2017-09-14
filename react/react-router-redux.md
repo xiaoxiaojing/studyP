@@ -14,7 +14,7 @@ history + store(redux) -> react-router-redux -> enhanced history -> react-router
 ```
 import { Router, Route, browserHistory } from 'react-router'
 import { syncHistoryWithStore, routerReducer } from 'react-router-redux'
-
+//
 // Add the reducer to your store on the `routing` key
 const store = createStore(
   combineReducers({
@@ -22,10 +22,10 @@ const store = createStore(
     routing: routerReducer
   })
 )
-
+//
 // Create an enhanced history that syncs navigation events with the store
 const history = syncHistoryWithStore(browserHistory, store)
-
+//
 ReactDOM.render(
   <Provider store={store}>
     { /* Tell the Router to use our enhanced history */ }
@@ -74,3 +74,17 @@ ReactDOM.render(
 
 2. routerMiddleware(history)
   * capture dispatched actions, and redirect those to the provided `history` instance.
+  ```
+  import { createStore, combineReducers, applyMiddleware } from 'redux';
+  import { routerMiddleware, push } from 'react-router-redux'
+  //
+  // Apply the middleware to the store
+  const middleware = routerMiddleware(browserHistory)
+  const store = createStore(
+    reducers,
+    applyMiddleware(middleware)
+  )
+  //
+  // Dispatch from anywhere like normal.
+  store.dispatch(push('/foo'))
+  ```

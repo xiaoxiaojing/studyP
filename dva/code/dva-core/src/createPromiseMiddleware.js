@@ -24,12 +24,13 @@ export default function createPromiseMiddleware(app) {
     }
   }*/
 
-  // ???
+  // redux中间件的写法
   const middleware = () => next => (action) => {
     // 从action中取得type
     const { type } = action;
 
     if (isEffect(type)) {
+      // 如果是异步操作就新建一个Promise
       return new Promise((resolve, reject) => {
         map[type] = {
           resolve: wrapped.bind(null, type, resolve),

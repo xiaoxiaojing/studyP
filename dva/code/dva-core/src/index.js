@@ -136,10 +136,9 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
         // }
         // plugin.apply('onError', errorHander)(err, app_store.dispatch)
 
-        // 这里在plugin中会触发错误。。。
         plugin.apply('onError', (err) => {
           throw new Error(err.stack || err);
-        })(err, app._store.dispatch); //出现错误的进行dispatch操作
+        })(err, app._store.dispatch);
       }
     };
 
@@ -150,11 +149,15 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
         )
     **/
     const sagaMiddleware = createSagaMiddleware();
+
+    //创建Promise Middleware
     const {
       middleware: promiseMiddleware,
       resolve,
       reject,
     } = createPromiseMiddleware(app);
+
+    // 设置 app._getSaga，指定了前两个参数为resolve和reject
     app._getSaga = getSaga.bind(null, resolve, reject);
 
     const sagas = [];
@@ -162,7 +165,9 @@ export function create(hooksAndOpts = {}, createOpts = {}) {
 
     // 遍历model初始化reducer,sagas
     for (const m of app._models) {
+      //获取reducers：是一个函数
       reducers[m.namespace] = getReducer(m.reducers, m.state);
+      //如果是effects，设置sagas
       if (m.effects) sagas.push(app._getSaga(m.effects, m, onError, plugin.get('onEffect')));
     }
     const reducerEnhancer = plugin.get('onReducer');

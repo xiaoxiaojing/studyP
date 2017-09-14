@@ -18,7 +18,7 @@ import { isFunction } from 'dva-core/lib/utils';
  * @return {Object}
  */
 export default function (opts = {}) {
-  // get history
+  // get history, 如果没有传入history，那么使用createHashHistory创建history
   const history = opts.history || createHashHistory();
 
   // set the options
@@ -39,9 +39,10 @@ export default function (opts = {}) {
     },
   };
 
+  // 创建app
   const app = core.create(opts, createOpts);
-  const oldAppStart = app.start;
-  app.router = router;
+  const oldAppStart = app.start; // app.start会在后面被覆盖
+  app.router = router; //router必须为函数
   app.start = start;
   return app;
 
@@ -107,6 +108,13 @@ function isString(str) {
   return typeof str === 'string';
 }
 
+/**
+ * 获取Provider
+ * @param  {Object} store
+ * @param  {Object} app
+ * @param  {Object} router   router({app, history, ...extraProps})
+ * @return {Function}
+ */
 function getProvider(store, app, router) {
   return extraProps => (
     <Provider store={store}>
@@ -115,11 +123,13 @@ function getProvider(store, app, router) {
   );
 }
 
+// 渲染
 function render(container, store, app, router) {
   const ReactDOM = require('react-dom');  // eslint-disable-line
   ReactDOM.render(React.createElement(getProvider(store, app, router)), container);
 }
 
+// 因为 history@3 之后，listen 后不会立即执行，而是等下一次，但在 subscription 里需要立即执行进行页面初始化。
 function patchHistory(history) {
   const oldListen = history.listen;
   history.listen = (callback) => {

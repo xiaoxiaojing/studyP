@@ -12,7 +12,7 @@ const hooks = [
   'extraEnhancers',
 ];
 
-// 唯一化hook
+// 过滤obj，使其只保留key值是hooks中的属性的项目
 export function filterHooks(obj) {
   return Object.keys(obj).reduce((memo, key) => {
     if (hooks.indexOf(key) > -1) {
@@ -44,6 +44,7 @@ export default class Plugin {
   }
 
   use(plugin) {
+    //plugin必须是一个对象
     invariant(isPlainObject(plugin), 'plugin.use: plugin should be plain object');
     const hooks = this.hooks;
     // 用plugin设置hooks中的属性值
